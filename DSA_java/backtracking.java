@@ -1,5 +1,3 @@
-package java.DSA_java;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 

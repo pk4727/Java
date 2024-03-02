@@ -132,26 +132,36 @@ public class bitwise_operator {
         int ans = findXORfrom0toA(b) ^ findXORfrom0toA(a - 1);
         return ans;
     }
+    public static int rangeBitwiseAnd(int left, int right) {
+        int shift = 0;
+        while (left < right) { // shift first letter until value are equal to 1
+            left >>= 1;
+            right >>= 1;
+            shift++;
+        }
+        return left << shift; // add 0 no of shift to right side of 1
+    }
 
     public static void main(String[] args) {
-        int n = 4;
-        // int n = 197;
-        // int[] arr = { 2, 3, 4, 5, 4, 3, 2 };
-        // System.out.println(isOdd(n));
-        // System.out.println(findUnique(arr));
-        // System.out.println(findIthBit(n));
-        // System.out.println(setIthBit1(n));
-        // System.out.println(magicNumber(n));
-        // System.out.println(countBit(n));
-        // System.out.println("Bit in Decimal : " + countBitInAnyNumberSystem(n, 10));
-        // System.out.println("Bit in Binary : " + countBitInAnyNumberSystem(n, 2));
-        // System.out.println("Bit in Octal : " + countBitInAnyNumberSystem(n, 8));
-        // System.out.println("Bit in Hexa : " + countBitInAnyNumberSystem(n, 16));
-        // System.out.println(pascalTriangle(n));
-        // System.out.println(checkpowerOf2(n));
-        // System.out.println(findPowerof(4, n));
-        // System.out.println(countSetBit(n));
-        // System.out.println(findXORfrom0toA(n));
-        System.out.println(findXORfromrangeAtoB(n, 8));
+//         int n = 4;
+////       int n = 197;
+//         int[] arr = { 2, 3, 4, 5, 4, 3, 2 };
+//         System.out.println(isOdd(n));
+//         System.out.println(findUnique(arr));
+//         System.out.println(findIthBit(n));
+//         System.out.println(setIthBit1(n));
+//         System.out.println(magicNumber(n));
+//         System.out.println(countBit(n));
+//         System.out.println("Bit in Decimal : " + countBitInAnyNumberSystem(n, 10));
+//         System.out.println("Bit in Binary : " + countBitInAnyNumberSystem(n, 2));
+//         System.out.println("Bit in Octal : " + countBitInAnyNumberSystem(n, 8));
+//         System.out.println("Bit in Hexa : " + countBitInAnyNumberSystem(n, 16));
+//         System.out.println(pascalTriangle(n));
+//         System.out.println(checkpowerOf2(n));
+//         System.out.println(findPowerof(4, n));
+//         System.out.println(countSetBit(n));
+//         System.out.println(findXORfrom0toA(n));
+//         System.out.println(findXORfromrangeAtoB(n, 8));
+           System.out.println(rangeBitwiseAnd(20,24));
     }
 }

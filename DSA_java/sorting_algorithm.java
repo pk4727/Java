@@ -1,26 +1,37 @@
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class sorting_algorithm {
     public static void main(String[] args) // main method for call all sorting algorithm
     {
-        // for a continues range from 1 to N :-
         int[] arr1 = { 3, 5, 2, 1, 4 };
-        System.out.println("Sorted Array (Cyclic_Sort)        : " + Arrays.toString(Cyclic_sort(arr1)));
+        int[] arr2 = { 833, 525, 699, 289, 716, 93, 256, 0, 491, 796, 862, 679, 77, 644, 365, 49, 902 };
+        System.out.println("Original Array : -----------------------> " + Arrays.toString(arr1));
+        System.out.println("Original Array : -----------------------> " + Arrays.toString(arr2));
+
+        // for a continues range from 1 to N :-
+        System.out.println("\nSorted Array (Cyclic_Sort) : -----------> " + Arrays.toString(Cyclic_sort(arr1)));
+
         // for all type of sorting problem :-
-        int[] arr = { 833, 525, 699, 289, 716, 93, 256, 0, 491, 796, 862, 679, 77, 644, 365, 49, 902 };
-        System.out.println("Original Array : " + Arrays.toString(arr) + "\n");
-        System.out.println("Sorted Array (Bubble_Sort)        : " + Arrays.toString(Bubble_sort(arr)));
-        System.out.println("Sorted Array (Insertion_Sort)     : " + Arrays.toString(Insertion_sort(arr)));
-        System.out.println("Sorted Array (Selection_Sort)     : " + Arrays.toString(Selection_sort(arr)));
+        System.out.println("\nSorted Array (Count_Sort_normal) : -----> " + Arrays.toString(Count_sort(arr1)));
+        System.out.println("Sorted Array (Count_Sort_by_HashMap) : -> " + Arrays.toString(Count_sort_Hashmap(arr1)));
+        System.out.println("Sorted Array (Bubble_Sort) : -----------> " + Arrays.toString(Bubble_sort(arr2)));
+        System.out.println("Sorted Array (Insertion_Sort) : --------> " + Arrays.toString(Insertion_sort(arr2)));
+        System.out.println("Sorted Array (Selection_Sort) : --------> " + Arrays.toString(Selection_sort(arr2)));
+        System.out.println("Sorted Array (Radix_Sort)         : ----> " + Arrays.toString(Radix_sort(arr2)));
+
         // recursion is used in next all algorithm :-
-        System.out.println("Sorted Array (Merge_Sort)         : " + Arrays.toString(Merge_sort(arr)));
-        System.out.println("Sorted Array (Merge_Sort_inplace) : " + Arrays.toString(Merge_sort_inplace(arr, 0, arr.length)));
-        System.out.println("Sorted Array (Quick_Sort)         : " + Arrays.toString(Quick_sort(arr, 0, arr.length - 1)));
+        System.out.println("\nSorted Array (Merge_Sort) : ------------> " + Arrays.toString(Merge_sort(arr2)));
+        System.out.println("Sorted Array (Merge_Sort_inplace) : ----> "
+                + Arrays.toString(Merge_sort_inplace(arr2, 0, arr2.length)));
+        System.out.println(
+                "Sorted Array (Quick_Sort) : ------------> " + Arrays.toString(Quick_sort(arr2, 0, arr2.length - 1)));
     }
 
     // ------------------------------------------------------------------------------------------
-    
-    static int[] Cyclic_sort(int[] arr) // when range is " 1 to N " then use this sorting algorithm here all number is given in range.
+
+    static int[] Cyclic_sort(int[] arr) // when range is " 1 to N " then use this sorting algorithm here all number is
+                                        // given in range.
     {
         int i = 0;
         while (i < arr.length) {
@@ -29,6 +40,58 @@ public class sorting_algorithm {
                 Swap(arr, i, correct);
             } else {
                 i++;
+            }
+        }
+        return arr;
+    }
+
+    // ------------------------------------------------------------------------------------------
+
+    public static int[] Count_sort(int[] arr) { // non comparison based algo (for smaller number)
+        if (arr == null && arr.length <= 1) {
+            return null;
+        }
+        int max = arr[0];
+        for (int num : arr) {
+            if (num > max) {
+                max = num;
+            }
+        }
+        int[] frequencyArray = new int[max + 1];
+        for (int num : arr) {
+            frequencyArray[num]++;
+        }
+        int index = 0;
+        for (int i = 0; i < frequencyArray.length; i++) {
+            if (frequencyArray[i] > 0) {
+                while (frequencyArray[i] > 0) {
+                    arr[index] = i;
+                    index++;
+                    frequencyArray[i]--;
+                }
+            }
+        }
+        return arr;
+    }
+
+    // --------------------------------------
+
+    public static int[] Count_sort_Hashmap(int[] arr) { // non comparison based algo (for smaller number)
+        if (arr == null && arr.length <= 1) {
+            return null;
+        }
+        int max = Arrays.stream(arr).max().getAsInt();
+        int min = Arrays.stream(arr).min().getAsInt();
+        HashMap<Integer, Integer> frequencyCount = new HashMap<>();
+        for (int num : arr) {
+            frequencyCount.put(num, frequencyCount.getOrDefault(num, 0) + 1);
+        }
+        int index = 0;
+        for (int i = min; i <= max; i++) {
+            int count = frequencyCount.getOrDefault(i, 0);
+            for (int j = 0; j < count; j++) {
+                arr[index] = i;
+                index++;
             }
         }
         return arr;
@@ -78,12 +141,40 @@ public class sorting_algorithm {
         return arr;
     }
 
-    // --------------------------------------
-
     static void Swap(int[] arr, int firstindex, int secondindex) {
         int temp = arr[firstindex];
         arr[firstindex] = arr[secondindex];
         arr[secondindex] = temp;
+    }
+
+    // ------------------------------------------------------------------------------------------
+    public static int[] Radix_sort(int[] arr) {
+        int max = Arrays.stream(arr).max().getAsInt();
+        for (int exponent = 1; max / exponent > 0; exponent *= 10) {
+            countSort(arr, exponent);
+        }
+        return arr;
+    }
+
+    private static void countSort(int[] arr, int exp) {
+        int n = arr.length;
+        int[] output = new int[n];
+        int[] count = new int[10]; // 0 to 9 10 value so size=10
+        Arrays.fill(count, 0); // fill count arr to 0
+        for (int i = 0; i < n; i++) { // gives the exp place value
+            count[(arr[i] / exp) % 10]++; // (eg 471 ,exp = 10 then 471/10 = 47 and 47%10 = 7)
+        }
+        // System.out.println("\nCount array for " + exp + " : " + Arrays.toString(count));
+        for (int i = 1; i < 10; i++) {
+            count[i] = count[i] + count[i - 1]; // for find index of coming original value
+        }
+        // System.out.println("Updated count array " + Arrays.toString(count));
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+            count[(arr[i] / exp) % 10]--;
+        }
+        // System.out.println("Output array " + Arrays.toString(output));
+        System.arraycopy(output, 0, arr, 0, n);
     }
 
     // ------------------------------------------------------------------------------------------

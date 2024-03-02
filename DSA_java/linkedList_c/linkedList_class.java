@@ -1,5 +1,10 @@
 package linkedList_c;
 
+import org.w3c.dom.Node;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+
 public class linkedList_class {
     private Node head;
     private Node tail;
@@ -162,7 +167,7 @@ public class linkedList_class {
         return element;
     }
 
-    public void removeDuplicate() { // leetcode_83
+    public void removeDuplicate() { // l_83
         deleteDuplicates(head);
         display();
     }
@@ -320,8 +325,203 @@ public class linkedList_class {
         return list;
     }
 
-    public linkedList_class reverseBetween(linkedList_class list,int start,int end){
-        
-        return null;
+    public linkedList_class addTwoNumbers(linkedList_class l1, linkedList_class l2) { // l_2
+        Node n1 = l1.head;
+        Node n2 = l2.head;
+
+        String l1digits = "";
+        String l2digits = "";
+        while (n1 != null) {
+            l1digits += String.valueOf(n1.value);
+            n1 = n1.next;
+        }
+        while (n2 != null) {
+            l2digits += String.valueOf(n2.value);
+            n2 = n2.next;
+        }
+
+        l1digits = reverseString(l1digits);
+        l2digits = reverseString(l2digits);
+        BigInteger bd1 = new BigInteger(l1digits);
+        BigInteger bd2 = new BigInteger(l2digits);
+        BigInteger sum_n1_n2 = bd1.add(bd2);
+        String ans = String.valueOf(sum_n1_n2);
+        ans = reverseString(ans);
+
+        // System.out.println(l1digits + " " + l2digits + " " + ans);
+        linkedList_class anslist = new linkedList_class();
+        while (!ans.isEmpty()) {
+            char c = (char) (ans.charAt(0) - '0');
+            anslist.insertLast(c);
+            ans = ans.substring(1);
+        }
+        return anslist;
+    }
+
+    public String reverseString(String str) {
+        String ans = "";
+        for (int i = 0; i < str.length(); i++) {
+            ans = str.charAt(i) + ans;
+        }
+        return ans;
+    }
+
+    public linkedList_class reverseBetween(linkedList_class list, int left, int right) { // l_92
+        if (left == right) {
+            return list;
+        }
+        Node prev = null;
+        Node present = list.head;
+        for (int i = 0; present != null && i < left - 1; i++) {
+            prev = present;
+            present = present.next;
+        }
+        // System.out.println(prev.value+" "+ present.value);
+        Node last = prev;
+        Node newend = present;
+        Node next = present.next;
+        for (int i = 0; present != null && i < right - left + 1; i++) {
+            present.next = prev;
+            prev = present;
+            present = next;
+            if (next != null) {
+                next = next.next;
+            }
+        }
+        if (last != null) {
+            last.next = prev;
+        } else {
+            head = prev;
+        }
+        newend.next = present;
+        return list;
+    }
+
+    public boolean isPalindromNum(int n) {
+        int temp = n;
+        int sum = 0;
+        while (n > 0) {
+            int r = n % 10;
+            sum = (sum * 10) + r;
+            n = n / 10;
+        }
+        if (temp == sum) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPalindrome2(linkedList_class list) { // l_234
+        int num = 0;
+        Node temp = list.head;
+        while (temp != null) {
+            num = num * 10 + temp.value;
+            temp = temp.next;
+        }
+        // System.out.println(num);
+        if (isPalindromNum(num)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void reorderList(linkedList_class list) { // l_143 in leetcode file
+        System.out.println("in leetcode file l_143.java");
+    }
+
+    public int getLength(linkedList_class list) {
+        Node node = list.head;
+        int length = 0;
+        while (node != null) {
+            length++;
+            node = node.next;
+        }
+        return length;
+    }
+
+    public linkedList_class reverseKGroup(linkedList_class list, int k) { // l_25
+        if (k == 0 || head == null) {
+            return list;
+        }
+        Node present = list.head;
+        Node prev = null;
+        int length = getLength(list);
+        int count = length / k;
+        while (count > 0) {
+            Node last = prev;
+            Node temphead = present;
+            Node next = present.next;
+            for (int i = 0; present != null && i < k; i++) {
+                present.next = prev;
+                prev = present;
+                present = next;
+                if (next != null) {
+                    next = next.next;
+                }
+            }
+            if (last != null) {
+                last.next = prev;
+            } else {
+                head = prev;
+            }
+            temphead.next = present;
+            prev = temphead;
+            count--;
+        }
+        return list;
+    }
+
+    public linkedList_class rotateRight(linkedList_class list, int k) { // l_61
+        if (k <= 0 || list.head == null || list.head.next == null) {
+            return list;
+        }
+        Node end = list.head;
+        int length = 1;
+        while (end.next != null) {
+            length++;
+            end = end.next;
+        }
+        end.next = head;
+        int noOfSkipRotation = length - (k % length);
+        Node newlast = head;
+        for (int i = 0; i < noOfSkipRotation - 1; i++) {
+            newlast = newlast.next;
+        }
+        head = newlast.next;
+        newlast.next = null;
+        return list;
+    }
+
+    // https://www.geeksforgeeks.org/reverse-alternate-k-nodes-in-a-singly-linked-list/
+    public linkedList_class reverseAlternateKGroup(linkedList_class list, int k) { // gfg question
+        if (k == 0 || list.head == null) {
+            return list;
+        }
+        Node present = list.head;
+        Node prev = null;
+        while (present != null) {
+            Node last = prev;
+            Node temphead = present;
+            Node next = present.next;
+            for (int i = 0; present != null && i < k; i++) {
+                present.next = prev;
+                prev = present;
+                present = next;
+                if (next != null) {
+                    next = next.next;
+                }
+            }
+            if (last != null) {
+                last.next = prev;
+            } else {
+                head = prev;
+            }
+            temphead.next = present;
+            for (int i = 0; present != null && i < k; i++) {
+                prev = present;
+                present = present.next;
+            }
+        }
+        return list;
     }
 }
